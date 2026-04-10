@@ -296,7 +296,6 @@ def parse_args():
     parser.add_argument('--port', default=8000, type=int, nargs='?',
                         help='bind to this port '
                              '(default: %(default)s)')
-    parser.add_argument('--lib-name', default="Tree", help='Name of top-level directory and the library.')
     parser.add_argument('--lean-toolchain', default="leanprover/lean4:v4.29.0", help='Lean toolchain to use.')
     parser.add_argument('--authors', default=["Richard L Ford"], help='Authors to list in the verso documentation.')
     parser.add_argument('--excludes', default=["tests"], help='Directories to exclude from the documentation (default tests).')
