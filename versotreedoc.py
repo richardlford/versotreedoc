@@ -33,7 +33,8 @@ def write_file(path, contents):
 
 
 class VersoTreeDoc(object):
-    def __init__(self, path, args, script_dir):
+    def __init__(self, args):
+        path = args.root_dir
         self.path = path
         self.path_path = Path(path)
         self.path_parts = list(self.path_path.parts)
@@ -43,9 +44,8 @@ class VersoTreeDoc(object):
         self.output_dir = args.output_dir
         self.output_path = Path(args.output_dir)
         self.output_parts = list(self.output_path.parts)
-        self.script_dir = script_dir
         self.port = args.port
-        self.lib_name = args.lib_name
+        self.lib_name = os.path.basename(path)
         self.lean_toolchain = args.lean_toolchain
         authors = "["
         for author in args.authors:
@@ -80,6 +80,7 @@ class VersoTreeDoc(object):
         parts = list(root_path.parts)
         relative_parts = parts[len(self.parent_path_parts):]
         prefixed_relative_parts = [f"{self.prefix}{part}" for part in relative_parts]
+        quoted_prefixed_relative_parts = [f"«{self.prefix}{part}»" for part in relative_parts]
         relative_text = Path(*relative_parts).as_posix()
         this_parts = self.output_parts + prefixed_relative_parts
         prefixed_path = Path(*this_parts)
@@ -96,7 +97,7 @@ class VersoTreeDoc(object):
 """
 
             for d in dirs:
-                dir_parts = prefixed_relative_parts + [f"{self.prefix}{d}"]
+                dir_parts = quoted_prefixed_relative_parts + [f"«{self.prefix}{d}»"]
                 import_text = f"""import {".".join(dir_parts)}\n"""
                 contents = contents + import_text
                 pass
@@ -132,7 +133,7 @@ TODO
 """
 
             for d in dirs:
-                dir_parts = prefixed_relative_parts + [f"{self.prefix}{d}"]
+                dir_parts = quoted_prefixed_relative_parts + [f"«{self.prefix}{d}»"]
                 include_text = f"""{{include {".".join(dir_parts)}}}\n"""
                 contents = contents + include_text
                 pass
@@ -287,11 +288,12 @@ def main := manualMain (%doc {self.prefix}{self.lib_name}) (config := config)
     def write_toolchain(self):
         contents = f"""{self.lean_toolchain}
         """
-        write_file(os.path.join(self.output_dir, "lean_toolchain"), contents)
+        write_file(os.path.join(self.output_dir, "lean-toolchain"), contents)
         pass
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Produce verso documentation skeleton for a directory tree.")
+    parser.add_argument('--root-dir', required=True, help='Path to directory for which to produce documentation.')
     parser.add_argument('--output-dir', required=True, help='Output directory where the output will be stored.')
     parser.add_argument('--port', default=8000, type=int, nargs='?',
                         help='bind to this port '
@@ -304,12 +306,9 @@ def parse_args():
     return args
 
 def main():
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    current_path = os.getcwd()
-    current_simple_dir = os.path.basename(current_path)
     args = parse_args()
-    args.lib_name = current_simple_dir
-    vtd = VersoTreeDoc(current_path, args, script_dir)
+    current_path = args.root_dir
+    vtd = VersoTreeDoc(args)
     vtd.write_lakefile()
     vtd.write_serve_py()
     vtd.write_main()
