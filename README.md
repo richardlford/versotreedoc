@@ -8,7 +8,8 @@ Here is the help message for versotreedoc:
 
 ```
 $ versotreedoc.py --help
-usage: versotreedoc.py [-h] --root-dir ROOT_DIR --output-dir OUTPUT_DIR [--port [PORT]] [--lean-toolchain LEAN_TOOLCHAIN]
+usage: versotreedoc.py [-h] --root-dir ROOT_DIR --output-dir OUTPUT_DIR [--port [PORT]] 
+                       [--lean-toolchain LEAN_TOOLCHAIN]
                        [--authors AUTHORS] [--excludes EXCLUDES] [--prefix PREFIX]
 
 Produce verso documentation skeleton for a directory tree.
@@ -26,9 +27,9 @@ options:
   --prefix PREFIX       Prefix to add to files to avoid collisions (default Vtd_).
 ```
 
-The Examples/versodoc directory contains an example of the output of versotreedoc. The example was generated with the following command, where we assume $verso is the path to a clone of the verso tool, and $verso is the 
-desired output directory:
-
+The Examples/versodoc directory contains an example of the output of versotreedoc. The example was generated with the
+following command, where we assume $verso is the path to a clone of the verso tool, and the current
+working directory is the root of the versotreedoc repository. 
 ```
 versotreedoc.py --root-dir $verso/src --output-dir Examples/versodoc 
 ```
