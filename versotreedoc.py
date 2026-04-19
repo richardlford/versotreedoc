@@ -56,6 +56,7 @@ class VersoTreeDoc(object):
         self.authors = authors
         os.makedirs(self.output_dir, exist_ok=True)
         self.prefix = args.prefix
+        self.vscode_links = args.vscode_links
         excludes = set()
         for exclude in args.excludes:
             excludes.add(exclude)
@@ -107,7 +108,6 @@ class VersoTreeDoc(object):
 
 """
 
-
         contents = contents + f"""
 
 import VersoManual
@@ -147,7 +147,10 @@ tag := "{relative_text}-files"
 
 """
             for f in files:
-                contents = contents + f""": `{f}`\n\n  TODO\n\n"""
+                contents = contents + f""": `{f}`\n\n  """
+                if self.vscode_links:
+                    contents = contents + f"""[source](vscode:{root}/{f})"""
+                contents = contents + f"""TODO\n\n"""
             pass
 
 # File in `{lean_posix}`
@@ -157,7 +160,19 @@ tag := "{relative_text}-files"
 
     def traverse(self, dirpath):
         for root, dirs, files in os.walk(dirpath):
-            dirs[:] = [d for d in dirs if not d.startswith('.') and not d in self.excludes]
+            root_path = Path(root)
+            root_path_parts = list(root_path.parts)
+            relative_root_parts = root_path_parts[len(self.path_parts):]
+            updated_dirs = []
+            for d in dirs:
+                if d.startswith("."):
+                    continue
+                d_path = Path(*(relative_root_parts + [d])).as_posix()
+                if d_path in self.excludes:
+                    continue
+                updated_dirs.append(d)
+
+            dirs[:] = updated_dirs
             self.make_verso(root, dirs, files)
             pass
 
@@ -267,7 +282,7 @@ Author: David Thrane Christiansen
 
 import Std.Data.HashMap
 import VersoManual
-import {self.prefix}{self.lib_name}
+import «{self.prefix}{self.lib_name}»
 
 open Verso Doc
 open Verso.Genre Manual
@@ -280,7 +295,7 @@ def config : RenderConfig where
   emitHtmlMulti := .immediately
   htmlDepth := 3
 
-def main := manualMain (%doc {self.prefix}{self.lib_name}) (config := config)
+def main := manualMain (%doc «{self.prefix}{self.lib_name}») (config := config)
 """
         write_file(os.path.join(self.output_dir, "Main.lean"), contents)
         pass
@@ -298,10 +313,12 @@ def parse_args():
     parser.add_argument('--port', default=8000, type=int, nargs='?',
                         help='bind to this port '
                              '(default: %(default)s)')
-    parser.add_argument('--lean-toolchain', default="leanprover/lean4:v4.29.0", help='Lean toolchain to use.')
-    parser.add_argument('--authors', default=["Richard L Ford"], help='Authors to list in the verso documentation.')
-    parser.add_argument('--excludes', default=["tests"], help='Directories to exclude from the documentation (default tests).')
+    parser.add_argument('--lean-toolchain', default="leanprover/lean4:v4.30.0-rc2", help='Lean toolchain to use.')
+    parser.add_argument('--authors', nargs="*", type=str, default=["Richard L Ford"], help='Authors to list in the verso documentation.')
+    parser.add_argument('--excludes', nargs="*", type=str, default=["tests"], help='Directories to exclude from the documentation (default tests).')
     parser.add_argument('--prefix', default="Vtd_", help='Prefix to add to files to avoid collisions (default Vtd_).')
+    parser.add_argument('--vscode-links', action='store_true',
+                        help='Include source links in the generated documentation.')
     args = parser.parse_args()
     return args
 
