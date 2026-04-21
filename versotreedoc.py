@@ -57,10 +57,14 @@ class VersoTreeDoc(object):
         os.makedirs(self.output_dir, exist_ok=True)
         self.prefix = args.prefix
         self.vscode_links = args.vscode_links
-        excludes = set()
-        for exclude in args.excludes:
-            excludes.add(exclude)
-        self.excludes = excludes
+        path_excludes = set()
+        for exclude in args.path_excludes:
+            path_excludes.add(exclude)
+        self.path_excludes = path_excludes
+        dir_excludes = set()
+        for exclude in args.dir_excludes:
+            dir_excludes.add(exclude)
+        self.dir_excludes = dir_excludes
         pass
 
     def make_verso(self, root, dirs, files):
@@ -167,8 +171,10 @@ tag := "{relative_text}-files"
             for d in dirs:
                 if d.startswith("."):
                     continue
+                if d in self.dir_excludes:
+                    continue
                 d_path = Path(*(relative_root_parts + [d])).as_posix()
-                if d_path in self.excludes:
+                if d_path in self.path_excludes:
                     continue
                 updated_dirs.append(d)
 
@@ -315,7 +321,10 @@ def parse_args():
                              '(default: %(default)s)')
     parser.add_argument('--lean-toolchain', default="leanprover/lean4:v4.30.0-rc2", help='Lean toolchain to use.')
     parser.add_argument('--authors', nargs="*", type=str, default=["Richard L Ford"], help='Authors to list in the verso documentation.')
-    parser.add_argument('--excludes', nargs="*", type=str, default=["tests"], help='Directories to exclude from the documentation (default tests).')
+    parser.add_argument('--path-excludes', nargs="*", type=str, default=["tests"], help='Directory paths to exclude from the documentation (default tests).')
+    parser.add_argument('--dir-excludes', nargs="*", type=str, default=["tests", "build"],
+                        help='''Simple directory names to exclude from the documentation (default ["tests", "build"]).
+                        Also, all directories starting with "." are automatically excluded.''')
     parser.add_argument('--prefix', default="Vtd_", help='Prefix to add to files to avoid collisions (default Vtd_).')
     parser.add_argument('--vscode-links', action='store_true',
                         help='Include source links in the generated documentation.')
