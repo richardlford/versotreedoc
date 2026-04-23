@@ -45,6 +45,7 @@ class VersoTreeDoc(object):
         self.output_path = Path(args.output_dir)
         self.output_parts = list(self.output_path.parts)
         self.port = args.port
+        self.abbrev_level = args.abbrev_level
         self.lib_name = os.path.basename(path)
         self.lean_toolchain = args.lean_toolchain
         authors = "["
@@ -87,6 +88,12 @@ class VersoTreeDoc(object):
         prefixed_relative_parts = [f"{self.prefix}{part}" for part in relative_parts]
         quoted_prefixed_relative_parts = [f"«{self.prefix}{part}»" for part in relative_parts]
         relative_text = Path(*relative_parts).as_posix()
+        hyphen_text = "-".join(relative_parts)
+        abbrev_relative_parts = relative_parts.copy()
+        if len(abbrev_relative_parts) > self.abbrev_level:
+            for i in range(len(abbrev_relative_parts) - self.abbrev_level):
+                abbrev_relative_parts[i] = abbrev_relative_parts[i][0]
+        abbrev_relative_text = Path(*abbrev_relative_parts).as_posix()
         this_parts = self.output_parts + prefixed_relative_parts
         prefixed_path = Path(*this_parts)
         prefixed_path.mkdir(parents=True, exist_ok=True)
@@ -122,11 +129,11 @@ open Verso.Genre Manual
 -- environment as Verso
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "`{relative_text}`"  =>
+#doc (Manual) "`{abbrev_relative_text}`"  =>
 
 %%%
 authors := {self.authors}
-tag := "{relative_text}"
+tag := "{hyphen_text}"
 %%%
 
 TODO
@@ -144,7 +151,7 @@ TODO
 
         if len(files) > 0:
             contents = contents + f"""
-# Files in `{relative_text}`
+# `{abbrev_relative_text}` Files
 %%%
 tag := "{relative_text}-files"
 %%%
@@ -319,6 +326,8 @@ def parse_args():
     parser.add_argument('--port', default=8000, type=int, nargs='?',
                         help='bind to this port '
                              '(default: %(default)s)')
+    parser.add_argument('--abbrev-level', default=2, type=int,
+                        help='Number of path components to include in the abbreviated path (default: %(default)s).')
     parser.add_argument('--lean-toolchain', default="leanprover/lean4:v4.30.0-rc2", help='Lean toolchain to use.')
     parser.add_argument('--authors', nargs="*", type=str, default=["Richard L Ford"], help='Authors to list in the verso documentation.')
     parser.add_argument('--path-excludes', nargs="*", type=str, default=["tests"], help='Directory paths to exclude from the documentation (default tests).')
