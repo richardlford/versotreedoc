@@ -1,0 +1,15 @@
+name = "internals"
+version = "0.1.0"
+defaultTargets = ["internals"]
+
+[[require]]
+name = "verso"
+git = "https://github.com/leanprover/verso"
+rev = "main"
+
+[[lean_lib]]
+name = "Vtd_src"
+
+[[lean_exe]]
+name = "internals"
+root = "Main"
