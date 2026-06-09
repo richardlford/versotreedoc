@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 """
-Produce verso documentation skeleton for a directory tree.
+Produce the verso documentation skeleton for a directory tree.
 
-Richard L Ford, April 6,  2026
+Richard L Ford, April 6, 2026
 """
 
 import os
@@ -58,6 +58,7 @@ class VersoTreeDoc(object):
         os.makedirs(self.output_dir, exist_ok=True)
         self.prefix = args.prefix
         self.vscode_links = args.vscode_links
+        self.include_dot_files = args.include_dot_files
         path_excludes = set()
         for exclude in args.path_excludes:
             path_excludes.add(exclude)
@@ -67,6 +68,58 @@ class VersoTreeDoc(object):
             dir_excludes.add(exclude)
         self.dir_excludes = dir_excludes
         pass
+
+    def make_file_description(self, root, file):
+        """
+        Make a description for a file in the given directory.
+
+        :param root: Path to the directory containing the file.
+        :param file: The name of the file.
+        :return: A string description of the file.
+        """
+        root_path = Path(root)
+        parts = list(root_path.parts)
+        relative_parts = parts[len(self.parent_path_parts):]
+        relative_parts.append(file)
+        prefixed_relative_parts = [f"{self.prefix}{part}" for part in relative_parts]
+        hyphen_text = "-".join(relative_parts)
+        abbrev_relative_parts = relative_parts.copy()
+        if len(abbrev_relative_parts) > self.abbrev_level:
+            for i in range(len(abbrev_relative_parts) - self.abbrev_level):
+                abbrev_relative_parts[i] = abbrev_relative_parts[i][0]
+        abbrev_relative_text = Path(*abbrev_relative_parts).as_posix()
+        lean_parts = self.output_parts + prefixed_relative_parts
+        lean_parts[-1] = lean_parts[-1] + ".lean"
+        lean_path = Path(*lean_parts)
+        lean_posix = lean_path.as_posix()
+        contents = f"""-- {lean_posix}
+
+"""
+        contents = contents + f"""
+
+import VersoManual
+open Verso.Genre Manual
+open Verso.Genre.Manual.InlineLean
+
+#doc (Manual) "`{abbrev_relative_text}`"  =>
+
+%%%
+authors := {self.authors}
+tag := "{hyphen_text}"
+%%%
+
+"""
+        if self.vscode_links:
+            contents = contents + f"""[source](vscode:{root}/{file})"""
+            contents = contents + f""" [doc-source](vscode:{lean_posix})\n"""
+
+        contents = contents + f"""
+TODO
+
+"""
+
+        lean_path.write_text(contents)
+        return
 
     def make_verso(self, root, dirs, files):
         """
@@ -97,11 +150,25 @@ class VersoTreeDoc(object):
         this_parts = self.output_parts + prefixed_relative_parts
         prefixed_path = Path(*this_parts)
         prefixed_path.mkdir(parents=True, exist_ok=True)
-        lean_path = prefixed_path.with_suffix('.lean')
+        lean_parts = this_parts.copy()
+        lean_parts[-1] = lean_parts[-1] + ".lean"
+        lean_path = Path(*lean_parts)
         lean_posix = lean_path.as_posix()
+
         contents = f"""-- {lean_posix}
-        
+
+        """
+        # Now that we've made the directory, write file description files.
+        if len(files) > 0:
+            contents = contents + f"""
+-- Imports for contained files.
 """
+            for file in files:
+                self.make_file_description(root, file)
+                file_parts = quoted_prefixed_relative_parts + [f"«{self.prefix}{file}»"]
+                import_text = f"""import {".".join(file_parts)}\n"""
+                contents = contents + import_text
+
         if len(dirs) > 0:
             contents = contents + f"""
 -- Imports from child directories.
@@ -122,11 +189,7 @@ class VersoTreeDoc(object):
         contents = contents + f"""
 
 import VersoManual
--- This gets access to most of the manual genre (which is also useful for textbooks)
 open Verso.Genre Manual
-
--- This gets access to Lean code that's in code blocks, elaborated in the same process and
--- environment as Verso
 open Verso.Genre.Manual.InlineLean
 
 #doc (Manual) "`{abbrev_relative_text}`"  =>
@@ -139,6 +202,18 @@ tag := "{hyphen_text}"
 TODO
 
 """
+        if len(files) > 0:
+            contents = contents + f"""
+Files:
+
+"""
+            for file in files:
+                file_parts = quoted_prefixed_relative_parts + [f"«{self.prefix}{file}»"]
+                include_text = f"""{{include {".".join(file_parts)}}}\n"""
+                contents = contents + include_text
+
+            pass
+
         if len(dirs) > 0:
             contents = contents + f"""
 """
@@ -149,20 +224,6 @@ TODO
                 contents = contents + include_text
                 pass
 
-        if len(files) > 0:
-            contents = contents + f"""
-# `{abbrev_relative_text}` Files
-%%%
-tag := "{relative_text}-files"
-%%%
-
-"""
-            for f in files:
-                contents = contents + f""": `{f}`\n\n  """
-                if self.vscode_links:
-                    contents = contents + f"""[source](vscode:{root}/{f})"""
-                contents = contents + f"""TODO\n\n"""
-            pass
 
 # File in `{lean_posix}`
         lean_path.write_text(contents)
@@ -185,7 +246,15 @@ tag := "{relative_text}-files"
                     continue
                 updated_dirs.append(d)
 
+            updated_dirs.sort()
             dirs[:] = updated_dirs
+            updated_files = []
+            for f in files:
+                if not self.include_dot_files and f.startswith("."):
+                    continue
+                updated_files.append(f)
+            files[:] = updated_files
+            files.sort()
             self.make_verso(root, dirs, files)
             pass
 
@@ -337,6 +406,8 @@ def parse_args():
     parser.add_argument('--prefix', default="Vtd_", help='Prefix to add to files to avoid collisions (default Vtd_).')
     parser.add_argument('--vscode-links', action='store_true',
                         help='Include source links in the generated documentation.')
+    parser.add_argument('--include-dot-files', action='store_true',
+                        help='Include dot files in the generated documentation.')
     args = parser.parse_args()
     return args
 
