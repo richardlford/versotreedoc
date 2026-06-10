@@ -31,6 +31,15 @@ def write_file(path, contents):
         f.write(contents)
     pass
 
+def sanitize_tag(tag: str) -> str:
+    """Change an non-alphanumeric character to a hyphen."""
+    sanitized = ""
+    for c in tag:
+        if c.isalnum():
+            sanitized = sanitized + c
+        else:
+            sanitized = sanitized + "-"
+    return sanitized
 
 class VersoTreeDoc(object):
     def __init__(self, args):
@@ -82,7 +91,7 @@ class VersoTreeDoc(object):
         relative_parts = parts[len(self.parent_path_parts):]
         relative_parts.append(file)
         prefixed_relative_parts = [f"{self.prefix}{part}" for part in relative_parts]
-        hyphen_text = "-".join(relative_parts)
+        hyphen_text = sanitize_tag("-".join(relative_parts))
         abbrev_relative_parts = relative_parts.copy()
         if len(abbrev_relative_parts) > self.abbrev_level:
             for i in range(len(abbrev_relative_parts) - self.abbrev_level):
@@ -140,8 +149,7 @@ TODO
         relative_parts = parts[len(self.parent_path_parts):]
         prefixed_relative_parts = [f"{self.prefix}{part}" for part in relative_parts]
         quoted_prefixed_relative_parts = [f"«{self.prefix}{part}»" for part in relative_parts]
-        relative_text = Path(*relative_parts).as_posix()
-        hyphen_text = "-".join(relative_parts)
+        hyphen_text = sanitize_tag("-".join(relative_parts))
         abbrev_relative_parts = relative_parts.copy()
         if len(abbrev_relative_parts) > self.abbrev_level:
             for i in range(len(abbrev_relative_parts) - self.abbrev_level):
@@ -192,27 +200,24 @@ import VersoManual
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "`{abbrev_relative_text}`"  =>
+#doc (Manual) "`{abbrev_relative_text}/`"  =>
 
 %%%
 authors := {self.authors}
 tag := "{hyphen_text}"
 %%%
+"""
+        if self.vscode_links:
+            contents = contents + f"""\n[doc-source](vscode:{lean_posix})\n"""
 
+        contents = contents + f"""
 TODO
 
 """
-        if len(files) > 0:
-            contents = contents + f"""
-Files:
-
-"""
-            for file in files:
-                file_parts = quoted_prefixed_relative_parts + [f"«{self.prefix}{file}»"]
-                include_text = f"""{{include {".".join(file_parts)}}}\n"""
-                contents = contents + include_text
-
-            pass
+        for file in files:
+            file_parts = quoted_prefixed_relative_parts + [f"«{self.prefix}{file}»"]
+            include_text = f"""{{include {".".join(file_parts)}}}\n"""
+            contents = contents + include_text
 
         if len(dirs) > 0:
             contents = contents + f"""
@@ -225,7 +230,6 @@ Files:
                 pass
 
 
-# File in `{lean_posix}`
         lean_path.write_text(contents)
         pass
 
@@ -395,7 +399,7 @@ def parse_args():
     parser.add_argument('--port', default=8000, type=int, nargs='?',
                         help='bind to this port '
                              '(default: %(default)s)')
-    parser.add_argument('--abbrev-level', default=2, type=int,
+    parser.add_argument('--abbrev-level', default=3, type=int,
                         help='Number of path components to include in the abbreviated path (default: %(default)s).')
     parser.add_argument('--lean-toolchain', default="leanprover/lean4:v4.30.0-rc2", help='Lean toolchain to use.')
     parser.add_argument('--authors', nargs="*", type=str, default=["Richard L Ford"], help='Authors to list in the verso documentation.')
