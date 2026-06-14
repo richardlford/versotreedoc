@@ -41,6 +41,21 @@ def sanitize_tag(tag: str) -> str:
             sanitized = sanitized + "-"
     return sanitized
 
+def is_included(output_dir: str, root: str) -> (bool, Path):
+    """
+    Check if the given root directory is included in the given output_dir directory.
+    :param output_dir: The directory that will contain the verso documentation.
+    :param root: The root of the artifact tree for which to produce documentation.
+    :return: True if root is included in the artifact tree.
+    """
+    output_path = Path(output_dir).resolve()
+    root_path = Path(root).resolve()
+    try:
+        rel = root_path.relative_to(output_path, walk_up=False)
+        return True, rel
+    except ValueError:
+        return False, Path()
+
 class VersoTreeDoc(object):
     def __init__(self, args):
         path = args.root_dir
@@ -76,6 +91,7 @@ class VersoTreeDoc(object):
         for exclude in args.dir_excludes:
             dir_excludes.add(exclude)
         self.dir_excludes = dir_excludes
+        self.is_included, self.relpath = is_included(self.output_dir, self.path)
         pass
 
     def make_file_description(self, root, file):
@@ -88,6 +104,9 @@ class VersoTreeDoc(object):
         """
         root_path = Path(root)
         parts = list(root_path.parts)
+        file_parts = parts.copy()
+        file_parts.append(file)
+        file_path = Path(*file_parts)
         relative_parts = parts[len(self.parent_path_parts):]
         relative_parts.append(file)
         prefixed_relative_parts = [f"{self.prefix}{part}" for part in relative_parts]
@@ -101,12 +120,15 @@ class VersoTreeDoc(object):
         lean_parts[-1] = lean_parts[-1] + ".lean"
         lean_path = Path(*lean_parts)
         lean_posix = lean_path.as_posix()
-        contents = f"""-- {lean_posix}
-
+        lean_prefixed_relative_parts = prefixed_relative_parts.copy()
+        lean_prefixed_relative_parts[-1] = lean_prefixed_relative_parts[-1] + ".lean"
+        lean_prefixed_posix = Path(*lean_prefixed_relative_parts).as_posix()
+        contents = f"""-- {lean_prefixed_posix}
 """
         contents = contents + f"""
 
 import VersoManual
+import VersoExts
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
@@ -119,8 +141,14 @@ tag := "{hyphen_text}"
 
 """
         if self.vscode_links:
-            contents = contents + f"""[source](vscode:{root}/{file})"""
-            contents = contents + f""" [doc-source](vscode:{lean_posix})\n"""
+            if self.is_included:
+                source_relative_path = file_path.relative_to(self.output_path)
+                contents = contents + f"""\n{{editlink "{source_relative_path}"}}[source]\n"""
+            else:
+                source_relative_path = file_path.relative_to(self.path_path)
+                contents = contents + f"""\n{{srclink "{source_relative_path}"}}[source]\n"""
+            lean_relative_path = lean_path.relative_to(self.output_path)
+            contents = contents + f"""\n{{editlink "{lean_relative_path}"}}[edit]\n"""
 
         contents = contents + f"""
 TODO
@@ -162,11 +190,14 @@ TODO
         lean_parts[-1] = lean_parts[-1] + ".lean"
         lean_path = Path(*lean_parts)
         lean_posix = lean_path.as_posix()
-
-        contents = f"""-- {lean_posix}
-
+        file_caption = "/".join(prefixed_path.parts) + ".lean"
+        lean_prefixed_relative_parts = prefixed_relative_parts.copy()
+        lean_prefixed_relative_parts[-1] = lean_prefixed_relative_parts[-1] + ".lean"
+        lean_prefixed_posix = Path(*lean_prefixed_relative_parts).as_posix()
+        contents = f"""-- {lean_prefixed_posix}
         """
-        # Now that we've made the directory, write file description files.
+        # Now that we've made the directory, write file description files, and
+        # import the file descriptor files.
         if len(files) > 0:
             contents = contents + f"""
 -- Imports for contained files.
@@ -180,7 +211,6 @@ TODO
         if len(dirs) > 0:
             contents = contents + f"""
 -- Imports from child directories.
-
 """
 
             for d in dirs:
@@ -191,12 +221,12 @@ TODO
 
             contents = contents + f"""
 -- End of Imports from child directories.
-
 """
 
         contents = contents + f"""
 
 import VersoManual
+import VersoExts
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
@@ -208,7 +238,8 @@ tag := "{hyphen_text}"
 %%%
 """
         if self.vscode_links:
-            contents = contents + f"""\n[doc-source](vscode:{lean_posix})\n"""
+            lean_relative_path = lean_path.relative_to(self.output_path)
+            contents = contents + f"""\n{{editlink "{lean_relative_path}"}}[edit]\n"""
 
         contents = contents + f"""
 TODO
@@ -273,6 +304,11 @@ defaultTargets = ["internals"]
 [[require]]
 name = "verso"
 git = "https://github.com/leanprover/verso"
+rev = "main"
+
+[[require]]
+name = "versoexts"
+git = "https://github.com/richardlford/versoexts"
 rev = "main"
 
 [[lean_lib]]
