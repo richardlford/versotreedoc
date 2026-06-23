@@ -7,6 +7,7 @@ Richard L Ford, April 6, 2026
 """
 
 import os
+import sys
 import argparse
 from pathlib import Path
 
@@ -19,17 +20,6 @@ def read_file(path):
     """
     with open(path, 'r') as f:
         return f.read()
-
-def write_file(path, contents):
-    """
-    Write the given contents to a file at the specified path.
-
-    :param path: The file path where the contents will be written.
-    :param contents: The string contents to write to the file.
-    """
-    with open(path, 'w') as f:
-        f.write(contents)
-    pass
 
 def sanitize_tag(tag: str) -> str:
     """Change an non-alphanumeric character to a hyphen."""
@@ -92,6 +82,23 @@ class VersoTreeDoc(object):
             dir_excludes.add(exclude)
         self.dir_excludes = dir_excludes
         self.is_included, self.relpath = is_included(self.output_dir, self.path)
+        self.update = args.update
+        self.overwrite = args.overwrite
+        pass
+
+    def write_file(self, path, contents):
+        """
+        Write the given contents to a file at the specified path.
+
+        :param path: The file path where the contents will be written.
+        :param contents: The string contents to write to the file.
+        """
+
+        if not self.overwrite and not self.update and os.path.exists(path):
+            print(f"Error: file already exists: {path}", file=sys.stderr)
+            sys.exit(1)
+        with open(path, 'w') as f:
+            f.write(contents)
         pass
 
     def make_file_description(self, root, file):
@@ -198,10 +205,10 @@ TODO
         """
         # Now that we've made the directory, write file description files, and
         # import the file descriptor files.
-        if len(files) > 0:
-            contents = contents + f"""
--- Imports for contained files.
+        contents = contents + f"""
+-- Imports for contained files or directories.
 """
+        if len(files) > 0:
             for file in files:
                 self.make_file_description(root, file)
                 file_parts = quoted_prefixed_relative_parts + [f"«{self.prefix}{file}»"]
@@ -209,19 +216,13 @@ TODO
                 contents = contents + import_text
 
         if len(dirs) > 0:
-            contents = contents + f"""
--- Imports from child directories.
-"""
-
             for d in dirs:
                 dir_parts = quoted_prefixed_relative_parts + [f"«{self.prefix}{d}»"]
                 import_text = f"""import {".".join(dir_parts)}\n"""
                 contents = contents + import_text
                 pass
 
-            contents = contents + f"""
--- End of Imports from child directories.
-"""
+        contents = contents + f"""-- End of Imports.\n"""
 
         contents = contents + f"""
 
@@ -247,18 +248,14 @@ TODO
 """
         for file in files:
             file_parts = quoted_prefixed_relative_parts + [f"«{self.prefix}{file}»"]
-            include_text = f"""{{include {".".join(file_parts)}}}\n"""
+            include_text = f"""{{include 1 {".".join(file_parts)}}}\n"""
             contents = contents + include_text
 
-        if len(dirs) > 0:
-            contents = contents + f"""
-"""
-
-            for d in dirs:
-                dir_parts = quoted_prefixed_relative_parts + [f"«{self.prefix}{d}»"]
-                include_text = f"""{{include {".".join(dir_parts)}}}\n"""
-                contents = contents + include_text
-                pass
+        for d in dirs:
+            dir_parts = quoted_prefixed_relative_parts + [f"«{self.prefix}{d}»"]
+            include_text = f"""{{include 1 {".".join(dir_parts)}}}\n"""
+            contents = contents + include_text
+            pass
 
 
         lean_path.write_text(contents)
@@ -318,7 +315,7 @@ name = "{self.prefix}{self.lib_name}"
 name = "internals"
 root = "Main"
 """
-        write_file(os.path.join(self.output_dir, "lakefile.toml"), contents)
+        self.write_file(os.path.join(self.output_dir, "lakefile.toml"), contents)
         pass
 
     def write_serve_py(self):
@@ -389,7 +386,7 @@ if __name__ == '__main__':
         protocol=args.protocol,
     )
 """
-        write_file(os.path.join(self.output_dir, "serve.py"), contents)
+        self.write_file(os.path.join(self.output_dir, "serve.py"), contents)
         pass
 
     def write_main(self):
@@ -419,13 +416,107 @@ def config : RenderConfig where
 
 def main := manualMain (%doc «{self.prefix}{self.lib_name}») (config := config)
 """
-        write_file(os.path.join(self.output_dir, "Main.lean"), contents)
+        self.write_file(os.path.join(self.output_dir, "Main.lean"), contents)
         pass
 
     def write_toolchain(self):
         contents = f"""{self.lean_toolchain}
         """
-        write_file(os.path.join(self.output_dir, "lean-toolchain"), contents)
+        self.write_file(os.path.join(self.output_dir, "lean-toolchain"), contents)
+        pass
+
+    def get_existing_documentation_files(self):
+        """
+        Get the existing documentation files in the output directory.
+        :return: A set of paths to the existing documentation files, and a sorted list of the paths.
+        """
+        existing_file_set = set()
+        for root, dirs, files in os.walk(self.output_dir):
+            updated_dirs = []
+            for d in dirs:
+                if not d.startswith(self.prefix):
+                    continue
+                updated_dirs.append(d)
+            updated_dirs.sort()
+            dirs[:] = updated_dirs
+
+            for file in files:
+                if file.startswith(self.prefix) and file.endswith(".lean"):
+                    file_path = Path(root) / file
+                    existing_file_set.add(file_path)
+        existing_file_list = list(existing_file_set)
+        existing_file_list.sort()
+        return existing_file_set, existing_file_list
+
+    def get_updated_documentation_files(self):
+        """
+        Using the logic of traverse, make_verso, and make_file_description,
+        get the set of updated documentation files.
+        """
+        updated_file_set = set()
+        for root, dirs, files in os.walk(self.path):
+            this_dir = os.path.basename(root)
+            if this_dir[0] == '.':
+                continue
+            root_path = Path(root)
+            root_path_parts = list(root_path.parts)
+            relative_root_parts = root_path_parts[len(self.parent_path_parts):]
+            updated_dirs = []
+            for d in dirs:
+                if d.startswith("."):
+                    continue
+                if d in self.dir_excludes:
+                    continue
+                d_path = Path(*(relative_root_parts + [d])).as_posix()
+                if d_path in self.path_excludes:
+                    continue
+                updated_dirs.append(d)
+
+            updated_dirs.sort()
+            dirs[:] = updated_dirs
+
+            prefixed_relative_parts = [f"{self.prefix}{part}" for part in relative_root_parts]
+            this_parts = self.output_parts + prefixed_relative_parts
+            lean_parts = this_parts.copy()
+            lean_parts[-1] = lean_parts[-1] + ".lean"
+            lean_path = Path(*lean_parts)
+            updated_file_set.add(lean_path.as_posix())
+
+            updated_files = []
+            for f in files:
+                if not self.include_dot_files and f.startswith("."):
+                    continue
+                updated_files.append(f)
+            files[:] = updated_files
+            files.sort()
+
+            for file in files:
+                file_relative_root_parts = relative_root_parts.copy()
+                file_relative_root_parts.append(file)
+                file_prefixed_relative_parts = [f"{self.prefix}{part}" for part in file_relative_root_parts]
+                lean_parts = self.output_parts + file_prefixed_relative_parts
+                lean_parts[-1] = lean_parts[-1] + ".lean"
+                lean_path = Path(*lean_parts)
+                lean_posix = lean_path.as_posix()
+                updated_file_set.add(lean_posix)
+        updated_file_list = list(updated_file_set)
+        updated_file_list.sort()
+        return updated_file_set, updated_file_list
+
+    def update_tree(self):
+        """
+        Update the verso documentation tree after addition or deletion of files and directories.
+        :return: None
+        """
+
+        # For now, assume lakefile, serve.py, toolchain and the main file do not need changes.
+        # self.write_lakefile()
+        # self.write_serve_py()
+        # self.write_main()
+        # self.write_toolchain()
+        existing_file_set, existing_file_list = self.get_existing_documentation_files()
+        updated_file_set, updated_file_list = self.get_updated_documentation_files()
+
         pass
 
 def parse_args():
@@ -437,7 +528,7 @@ def parse_args():
                              '(default: %(default)s)')
     parser.add_argument('--abbrev-level', default=3, type=int,
                         help='Number of path components to include in the abbreviated path (default: %(default)s).')
-    parser.add_argument('--lean-toolchain', default="leanprover/lean4:v4.30.0-rc2", help='Lean toolchain to use.')
+    parser.add_argument('--lean-toolchain', default="leanprover/lean4:v4.31.0", help='Lean toolchain to use.')
     parser.add_argument('--authors', nargs="*", type=str, default=["Richard L Ford"], help='Authors to list in the verso documentation.')
     parser.add_argument('--path-excludes', nargs="*", type=str, default=["tests"], help='Directory paths to exclude from the documentation (default tests).')
     parser.add_argument('--dir-excludes', nargs="*", type=str, default=["tests", "build"],
@@ -448,6 +539,10 @@ def parse_args():
                         help='Include source links in the generated documentation.')
     parser.add_argument('--include-dot-files', action='store_true',
                         help='Include dot files in the generated documentation.')
+    parser.add_argument('--update', action='store_true',
+                        help='Update existing documentation rather than making new documentation.')
+    parser.add_argument('--overwrite', action='store_true',
+                        help='Give permission to overwrite existing files.')
     args = parser.parse_args()
     return args
 
@@ -455,11 +550,14 @@ def main():
     args = parse_args()
     current_path = args.root_dir
     vtd = VersoTreeDoc(args)
-    vtd.write_lakefile()
-    vtd.write_serve_py()
-    vtd.write_main()
-    vtd.write_toolchain()
-    vtd.traverse(current_path)
+    if vtd.update:
+        vtd.update_tree()
+    else:
+        vtd.write_lakefile()
+        vtd.write_serve_py()
+        vtd.write_main()
+        vtd.write_toolchain()
+        vtd.traverse(current_path)
     pass
 
 if __name__ == "__main__":

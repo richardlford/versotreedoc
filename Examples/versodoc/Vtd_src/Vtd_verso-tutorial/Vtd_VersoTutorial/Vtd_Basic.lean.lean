@@ -1,19 +1,22 @@
--- /home/fordrl/e/versotreedoc/Examples/versodoc/Vtd_src/Vtd_verso-tutorial/Vtd_VersoTutorial/Vtd_Basic.lean.lean
-
+-- Vtd_src/Vtd_verso-tutorial/Vtd_VersoTutorial/Vtd_Basic.lean.lean
 
 
 import VersoManual
+import VersoExts
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "`s/v/VersoTutorial/Basic.lean`"  =>
+#doc (Manual) "`s/verso-tutorial/VersoTutorial/Basic.lean`"  =>
 
 %%%
 authors := ["Richard L Ford"]
-tag := "src-verso-tutorial-VersoTutorial-Basic.lean"
+tag := "src-verso-tutorial-VersoTutorial-Basic-lean"
 %%%
 
-[source](vscode:/home/fordrl/e/verso/src/verso-tutorial/VersoTutorial/Basic.lean) [doc-source](vscode:/home/fordrl/e/versotreedoc/Examples/versodoc/Vtd_src/Vtd_verso-tutorial/Vtd_VersoTutorial/Vtd_Basic.lean.lean)
+
+{srclink "verso-tutorial/VersoTutorial/Basic.lean"}[source]
+
+{editlink "Vtd_src/Vtd_verso-tutorial/Vtd_VersoTutorial/Vtd_Basic.lean.lean"}[edit]
 
 TODO
 

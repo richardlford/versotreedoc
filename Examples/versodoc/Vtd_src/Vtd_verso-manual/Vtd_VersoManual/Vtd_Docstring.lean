@@ -1,32 +1,32 @@
--- /home/fordrl/e/versotreedoc/Examples/versodoc/Vtd_src/Vtd_verso-manual/Vtd_VersoManual/Vtd_Docstring.lean
-
+-- Vtd_src/Vtd_verso-manual/Vtd_VersoManual/Vtd_Docstring.lean
         
--- Imports for contained files.
+-- Imports for contained files or directories.
 import «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Docstring».«Vtd_Basic.lean»
 import «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Docstring».«Vtd_Config.lean»
 import «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Docstring».«Vtd_DocName.lean»
 import «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Docstring».«Vtd_PrettyPrint.lean»
 import «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Docstring».«Vtd_Progress.lean»
+-- End of Imports.
 
 
 import VersoManual
+import VersoExts
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "`s/v/VersoManual/Docstring`"  =>
+#doc (Manual) "`s/verso-manual/VersoManual/Docstring/`"  =>
 
 %%%
 authors := ["Richard L Ford"]
 tag := "src-verso-manual-VersoManual-Docstring"
 %%%
 
+{editlink "Vtd_src/Vtd_verso-manual/Vtd_VersoManual/Vtd_Docstring.lean"}[edit]
+
 TODO
 
-
-Files:
-
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Docstring».«Vtd_Basic.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Docstring».«Vtd_Config.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Docstring».«Vtd_DocName.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Docstring».«Vtd_PrettyPrint.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Docstring».«Vtd_Progress.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Docstring».«Vtd_Basic.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Docstring».«Vtd_Config.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Docstring».«Vtd_DocName.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Docstring».«Vtd_PrettyPrint.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Docstring».«Vtd_Progress.lean»}

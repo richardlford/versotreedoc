@@ -1,24 +1,24 @@
--- /home/fordrl/e/versotreedoc/Examples/versodoc/Vtd_src/Vtd_verso/Vtd_Verso/Vtd_Code/Vtd_Highlighted.lean
-
+-- Vtd_src/Vtd_verso/Vtd_Verso/Vtd_Code/Vtd_Highlighted.lean
         
--- Imports for contained files.
+-- Imports for contained files or directories.
 import «Vtd_src».«Vtd_verso».«Vtd_Verso».«Vtd_Code».«Vtd_Highlighted».«Vtd_WebAssets.lean»
+-- End of Imports.
 
 
 import VersoManual
+import VersoExts
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "`s/v/V/Code/Highlighted`"  =>
+#doc (Manual) "`s/v/Verso/Code/Highlighted/`"  =>
 
 %%%
 authors := ["Richard L Ford"]
 tag := "src-verso-Verso-Code-Highlighted"
 %%%
 
+{editlink "Vtd_src/Vtd_verso/Vtd_Verso/Vtd_Code/Vtd_Highlighted.lean"}[edit]
+
 TODO
 
-
-Files:
-
-{include «Vtd_src».«Vtd_verso».«Vtd_Verso».«Vtd_Code».«Vtd_Highlighted».«Vtd_WebAssets.lean»}
+{include 1 «Vtd_src».«Vtd_verso».«Vtd_Verso».«Vtd_Code».«Vtd_Highlighted».«Vtd_WebAssets.lean»}

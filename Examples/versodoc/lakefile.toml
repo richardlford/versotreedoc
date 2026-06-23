@@ -7,6 +7,11 @@ name = "verso"
 git = "https://github.com/leanprover/verso"
 rev = "main"
 
+[[require]]
+name = "versoexts"
+git = "https://github.com/richardlford/versoexts"
+rev = "main"
+
 [[lean_lib]]
 name = "Vtd_src"
 

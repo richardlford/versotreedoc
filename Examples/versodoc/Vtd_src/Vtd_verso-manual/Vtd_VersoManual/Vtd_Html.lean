@@ -1,7 +1,6 @@
--- /home/fordrl/e/versotreedoc/Examples/versodoc/Vtd_src/Vtd_verso-manual/Vtd_VersoManual/Vtd_Html.lean
-
+-- Vtd_src/Vtd_verso-manual/Vtd_VersoManual/Vtd_Html.lean
         
--- Imports for contained files.
+-- Imports for contained files or directories.
 import «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html».«Vtd_Basic.lean»
 import «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html».«Vtd_Config.lean»
 import «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html».«Vtd_CssFile.lean»
@@ -10,29 +9,30 @@ import «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html».«Vtd_F
 import «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html».«Vtd_JsFile.lean»
 import «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html».«Vtd_SoftHyphenate.lean»
 import «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html».«Vtd_Style.lean»
+-- End of Imports.
 
 
 import VersoManual
+import VersoExts
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "`s/v/VersoManual/Html`"  =>
+#doc (Manual) "`s/verso-manual/VersoManual/Html/`"  =>
 
 %%%
 authors := ["Richard L Ford"]
 tag := "src-verso-manual-VersoManual-Html"
 %%%
 
+{editlink "Vtd_src/Vtd_verso-manual/Vtd_VersoManual/Vtd_Html.lean"}[edit]
+
 TODO
 
-
-Files:
-
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html».«Vtd_Basic.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html».«Vtd_Config.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html».«Vtd_CssFile.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html».«Vtd_DataFile.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html».«Vtd_Features.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html».«Vtd_JsFile.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html».«Vtd_SoftHyphenate.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html».«Vtd_Style.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html».«Vtd_Basic.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html».«Vtd_Config.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html».«Vtd_CssFile.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html».«Vtd_DataFile.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html».«Vtd_Features.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html».«Vtd_JsFile.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html».«Vtd_SoftHyphenate.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html».«Vtd_Style.lean»}

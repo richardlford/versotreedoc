@@ -1,26 +1,26 @@
--- /home/fordrl/e/versotreedoc/Examples/versodoc/Vtd_src/Vtd_verso-literate-html.lean
-
+-- Vtd_src/Vtd_verso-literate-html.lean
         
--- Imports for contained files.
+-- Imports for contained files or directories.
 import «Vtd_src».«Vtd_verso-literate-html».«Vtd_LiterateHtmlMain.lean»
 import «Vtd_src».«Vtd_verso-literate-html».«Vtd_literate.css»
+-- End of Imports.
 
 
 import VersoManual
+import VersoExts
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "`src/verso-literate-html`"  =>
+#doc (Manual) "`src/verso-literate-html/`"  =>
 
 %%%
 authors := ["Richard L Ford"]
 tag := "src-verso-literate-html"
 %%%
 
+{editlink "Vtd_src/Vtd_verso-literate-html.lean"}[edit]
+
 TODO
 
-
-Files:
-
-{include «Vtd_src».«Vtd_verso-literate-html».«Vtd_LiterateHtmlMain.lean»}
-{include «Vtd_src».«Vtd_verso-literate-html».«Vtd_literate.css»}
+{include 1 «Vtd_src».«Vtd_verso-literate-html».«Vtd_LiterateHtmlMain.lean»}
+{include 1 «Vtd_src».«Vtd_verso-literate-html».«Vtd_literate.css»}

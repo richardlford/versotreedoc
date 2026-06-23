@@ -1,19 +1,22 @@
--- /home/fordrl/e/versotreedoc/Examples/versodoc/Vtd_src/Vtd_verso-tutorial/Vtd_default.css.lean
-
+-- Vtd_src/Vtd_verso-tutorial/Vtd_default.css.lean
 
 
 import VersoManual
+import VersoExts
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "`s/verso-tutorial/default.css`"  =>
+#doc (Manual) "`src/verso-tutorial/default.css`"  =>
 
 %%%
 authors := ["Richard L Ford"]
-tag := "src-verso-tutorial-default.css"
+tag := "src-verso-tutorial-default-css"
 %%%
 
-[source](vscode:/home/fordrl/e/verso/src/verso-tutorial/default.css) [doc-source](vscode:/home/fordrl/e/versotreedoc/Examples/versodoc/Vtd_src/Vtd_verso-tutorial/Vtd_default.css.lean)
+
+{srclink "verso-tutorial/default.css"}[source]
+
+{editlink "Vtd_src/Vtd_verso-tutorial/Vtd_default.css.lean"}[edit]
 
 TODO
 

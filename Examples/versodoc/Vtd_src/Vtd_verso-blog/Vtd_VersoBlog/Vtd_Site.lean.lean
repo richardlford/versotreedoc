@@ -1,19 +1,22 @@
--- /home/fordrl/e/versotreedoc/Examples/versodoc/Vtd_src/Vtd_verso-blog/Vtd_VersoBlog/Vtd_Site.lean.lean
-
+-- Vtd_src/Vtd_verso-blog/Vtd_VersoBlog/Vtd_Site.lean.lean
 
 
 import VersoManual
+import VersoExts
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "`s/v/VersoBlog/Site.lean`"  =>
+#doc (Manual) "`s/verso-blog/VersoBlog/Site.lean`"  =>
 
 %%%
 authors := ["Richard L Ford"]
-tag := "src-verso-blog-VersoBlog-Site.lean"
+tag := "src-verso-blog-VersoBlog-Site-lean"
 %%%
 
-[source](vscode:/home/fordrl/e/verso/src/verso-blog/VersoBlog/Site.lean) [doc-source](vscode:/home/fordrl/e/versotreedoc/Examples/versodoc/Vtd_src/Vtd_verso-blog/Vtd_VersoBlog/Vtd_Site.lean.lean)
+
+{srclink "verso-blog/VersoBlog/Site.lean"}[source]
+
+{editlink "Vtd_src/Vtd_verso-blog/Vtd_VersoBlog/Vtd_Site.lean.lean"}[edit]
 
 TODO
 

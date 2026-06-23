@@ -1,7 +1,6 @@
--- /home/fordrl/e/versotreedoc/Examples/versodoc/Vtd_src/Vtd_verso-manual/Vtd_VersoManual.lean
-
+-- Vtd_src/Vtd_verso-manual/Vtd_VersoManual.lean
         
--- Imports for contained files.
+-- Imports for contained files or directories.
 import «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Basic.lean»
 import «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Bibliography.lean»
 import «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Diagrams.lean»
@@ -27,65 +26,59 @@ import «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Table.lean»
 import «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_TeX.lean»
 import «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_WebAssets.lean»
 import «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_WordCount.lean»
-
--- Imports from child directories.
-
 import «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Docstring»
 import «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Glossary»
 import «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html»
 import «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_InlineLean»
 import «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_LicenseInfo»
 import «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_TeX»
-
--- End of Imports from child directories.
-
+-- End of Imports.
 
 
 import VersoManual
+import VersoExts
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "`s/verso-manual/VersoManual`"  =>
+#doc (Manual) "`src/verso-manual/VersoManual/`"  =>
 
 %%%
 authors := ["Richard L Ford"]
 tag := "src-verso-manual-VersoManual"
 %%%
 
+{editlink "Vtd_src/Vtd_verso-manual/Vtd_VersoManual.lean"}[edit]
+
 TODO
 
-
-Files:
-
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Basic.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Bibliography.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Diagrams.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Docstring.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Draft.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Ext.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_ExternalLean.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Glossary.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_HighlightedCode.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Imports.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Index.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_InlineLean.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_License.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_LicenseInfo.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Linters.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Literate.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_LocalContents.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Marginalia.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Markdown.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Row.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Table.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_TeX.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_WebAssets.lean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_WordCount.lean»}
-
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Docstring»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Glossary»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_InlineLean»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_LicenseInfo»}
-{include «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_TeX»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Basic.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Bibliography.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Diagrams.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Docstring.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Draft.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Ext.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_ExternalLean.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Glossary.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_HighlightedCode.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Imports.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Index.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_InlineLean.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_License.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_LicenseInfo.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Linters.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Literate.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_LocalContents.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Marginalia.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Markdown.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Row.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Table.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_TeX.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_WebAssets.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_WordCount.lean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Docstring»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Glossary»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_Html»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_InlineLean»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_LicenseInfo»}
+{include 1 «Vtd_src».«Vtd_verso-manual».«Vtd_VersoManual».«Vtd_TeX»}

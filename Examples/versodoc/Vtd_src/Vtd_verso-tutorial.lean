@@ -1,35 +1,28 @@
--- /home/fordrl/e/versotreedoc/Examples/versodoc/Vtd_src/Vtd_verso-tutorial.lean
-
+-- Vtd_src/Vtd_verso-tutorial.lean
         
--- Imports for contained files.
+-- Imports for contained files or directories.
 import «Vtd_src».«Vtd_verso-tutorial».«Vtd_VersoTutorial.lean»
 import «Vtd_src».«Vtd_verso-tutorial».«Vtd_default.css»
-
--- Imports from child directories.
-
 import «Vtd_src».«Vtd_verso-tutorial».«Vtd_VersoTutorial»
-
--- End of Imports from child directories.
-
+-- End of Imports.
 
 
 import VersoManual
+import VersoExts
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "`src/verso-tutorial`"  =>
+#doc (Manual) "`src/verso-tutorial/`"  =>
 
 %%%
 authors := ["Richard L Ford"]
 tag := "src-verso-tutorial"
 %%%
 
+{editlink "Vtd_src/Vtd_verso-tutorial.lean"}[edit]
+
 TODO
 
-
-Files:
-
-{include «Vtd_src».«Vtd_verso-tutorial».«Vtd_VersoTutorial.lean»}
-{include «Vtd_src».«Vtd_verso-tutorial».«Vtd_default.css»}
-
-{include «Vtd_src».«Vtd_verso-tutorial».«Vtd_VersoTutorial»}
+{include 1 «Vtd_src».«Vtd_verso-tutorial».«Vtd_VersoTutorial.lean»}
+{include 1 «Vtd_src».«Vtd_verso-tutorial».«Vtd_default.css»}
+{include 1 «Vtd_src».«Vtd_verso-tutorial».«Vtd_VersoTutorial»}

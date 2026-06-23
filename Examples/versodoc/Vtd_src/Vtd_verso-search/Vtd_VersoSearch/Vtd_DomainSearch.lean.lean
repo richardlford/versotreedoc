@@ -1,19 +1,22 @@
--- /home/fordrl/e/versotreedoc/Examples/versodoc/Vtd_src/Vtd_verso-search/Vtd_VersoSearch/Vtd_DomainSearch.lean.lean
-
+-- Vtd_src/Vtd_verso-search/Vtd_VersoSearch/Vtd_DomainSearch.lean.lean
 
 
 import VersoManual
+import VersoExts
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "`s/v/VersoSearch/DomainSearch.lean`"  =>
+#doc (Manual) "`s/verso-search/VersoSearch/DomainSearch.lean`"  =>
 
 %%%
 authors := ["Richard L Ford"]
-tag := "src-verso-search-VersoSearch-DomainSearch.lean"
+tag := "src-verso-search-VersoSearch-DomainSearch-lean"
 %%%
 
-[source](vscode:/home/fordrl/e/verso/src/verso-search/VersoSearch/DomainSearch.lean) [doc-source](vscode:/home/fordrl/e/versotreedoc/Examples/versodoc/Vtd_src/Vtd_verso-search/Vtd_VersoSearch/Vtd_DomainSearch.lean.lean)
+
+{srclink "verso-search/VersoSearch/DomainSearch.lean"}[source]
+
+{editlink "Vtd_src/Vtd_verso-search/Vtd_VersoSearch/Vtd_DomainSearch.lean.lean"}[edit]
 
 TODO
 

@@ -1,19 +1,22 @@
--- /home/fordrl/e/versotreedoc/Examples/versodoc/Vtd_src/Vtd_verso/Vtd_Verso/Vtd_Doc/Vtd_PointOfInterest.lean.lean
-
+-- Vtd_src/Vtd_verso/Vtd_Verso/Vtd_Doc/Vtd_PointOfInterest.lean.lean
 
 
 import VersoManual
+import VersoExts
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "`s/v/V/Doc/PointOfInterest.lean`"  =>
+#doc (Manual) "`s/v/Verso/Doc/PointOfInterest.lean`"  =>
 
 %%%
 authors := ["Richard L Ford"]
-tag := "src-verso-Verso-Doc-PointOfInterest.lean"
+tag := "src-verso-Verso-Doc-PointOfInterest-lean"
 %%%
 
-[source](vscode:/home/fordrl/e/verso/src/verso/Verso/Doc/PointOfInterest.lean) [doc-source](vscode:/home/fordrl/e/versotreedoc/Examples/versodoc/Vtd_src/Vtd_verso/Vtd_Verso/Vtd_Doc/Vtd_PointOfInterest.lean.lean)
+
+{srclink "verso/Verso/Doc/PointOfInterest.lean"}[source]
+
+{editlink "Vtd_src/Vtd_verso/Vtd_Verso/Vtd_Doc/Vtd_PointOfInterest.lean.lean"}[edit]
 
 TODO
 

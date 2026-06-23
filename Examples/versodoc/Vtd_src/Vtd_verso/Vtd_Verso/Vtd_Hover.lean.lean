@@ -1,19 +1,22 @@
--- /home/fordrl/e/versotreedoc/Examples/versodoc/Vtd_src/Vtd_verso/Vtd_Verso/Vtd_Hover.lean.lean
-
+-- Vtd_src/Vtd_verso/Vtd_Verso/Vtd_Hover.lean.lean
 
 
 import VersoManual
+import VersoExts
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "`s/v/Verso/Hover.lean`"  =>
+#doc (Manual) "`s/verso/Verso/Hover.lean`"  =>
 
 %%%
 authors := ["Richard L Ford"]
-tag := "src-verso-Verso-Hover.lean"
+tag := "src-verso-Verso-Hover-lean"
 %%%
 
-[source](vscode:/home/fordrl/e/verso/src/verso/Verso/Hover.lean) [doc-source](vscode:/home/fordrl/e/versotreedoc/Examples/versodoc/Vtd_src/Vtd_verso/Vtd_Verso/Vtd_Hover.lean.lean)
+
+{srclink "verso/Verso/Hover.lean"}[source]
+
+{editlink "Vtd_src/Vtd_verso/Vtd_Verso/Vtd_Hover.lean.lean"}[edit]
 
 TODO
 

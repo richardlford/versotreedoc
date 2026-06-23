@@ -1,19 +1,22 @@
--- /home/fordrl/e/versotreedoc/Examples/versodoc/Vtd_src/Vtd_verso-literate/Vtd_VersoLiterate.lean.lean
-
+-- Vtd_src/Vtd_verso-literate/Vtd_VersoLiterate.lean.lean
 
 
 import VersoManual
+import VersoExts
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "`s/verso-literate/VersoLiterate.lean`"  =>
+#doc (Manual) "`src/verso-literate/VersoLiterate.lean`"  =>
 
 %%%
 authors := ["Richard L Ford"]
-tag := "src-verso-literate-VersoLiterate.lean"
+tag := "src-verso-literate-VersoLiterate-lean"
 %%%
 
-[source](vscode:/home/fordrl/e/verso/src/verso-literate/VersoLiterate.lean) [doc-source](vscode:/home/fordrl/e/versotreedoc/Examples/versodoc/Vtd_src/Vtd_verso-literate/Vtd_VersoLiterate.lean.lean)
+
+{srclink "verso-literate/VersoLiterate.lean"}[source]
+
+{editlink "Vtd_src/Vtd_verso-literate/Vtd_VersoLiterate.lean.lean"}[edit]
 
 TODO
 

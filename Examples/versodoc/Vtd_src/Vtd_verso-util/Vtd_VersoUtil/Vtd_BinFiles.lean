@@ -1,24 +1,24 @@
--- /home/fordrl/e/versotreedoc/Examples/versodoc/Vtd_src/Vtd_verso-util/Vtd_VersoUtil/Vtd_BinFiles.lean
-
+-- Vtd_src/Vtd_verso-util/Vtd_VersoUtil/Vtd_BinFiles.lean
         
--- Imports for contained files.
+-- Imports for contained files or directories.
 import «Vtd_src».«Vtd_verso-util».«Vtd_VersoUtil».«Vtd_BinFiles».«Vtd_Z85.lean»
+-- End of Imports.
 
 
 import VersoManual
+import VersoExts
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "`s/v/VersoUtil/BinFiles`"  =>
+#doc (Manual) "`s/verso-util/VersoUtil/BinFiles/`"  =>
 
 %%%
 authors := ["Richard L Ford"]
 tag := "src-verso-util-VersoUtil-BinFiles"
 %%%
 
+{editlink "Vtd_src/Vtd_verso-util/Vtd_VersoUtil/Vtd_BinFiles.lean"}[edit]
+
 TODO
 
-
-Files:
-
-{include «Vtd_src».«Vtd_verso-util».«Vtd_VersoUtil».«Vtd_BinFiles».«Vtd_Z85.lean»}
+{include 1 «Vtd_src».«Vtd_verso-util».«Vtd_VersoUtil».«Vtd_BinFiles».«Vtd_Z85.lean»}

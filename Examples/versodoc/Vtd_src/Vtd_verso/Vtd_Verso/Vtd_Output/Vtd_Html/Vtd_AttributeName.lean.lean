@@ -1,19 +1,22 @@
--- /home/fordrl/e/versotreedoc/Examples/versodoc/Vtd_src/Vtd_verso/Vtd_Verso/Vtd_Output/Vtd_Html/Vtd_AttributeName.lean.lean
-
+-- Vtd_src/Vtd_verso/Vtd_Verso/Vtd_Output/Vtd_Html/Vtd_AttributeName.lean.lean
 
 
 import VersoManual
+import VersoExts
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "`s/v/V/O/Html/AttributeName.lean`"  =>
+#doc (Manual) "`s/v/V/Output/Html/AttributeName.lean`"  =>
 
 %%%
 authors := ["Richard L Ford"]
-tag := "src-verso-Verso-Output-Html-AttributeName.lean"
+tag := "src-verso-Verso-Output-Html-AttributeName-lean"
 %%%
 
-[source](vscode:/home/fordrl/e/verso/src/verso/Verso/Output/Html/AttributeName.lean) [doc-source](vscode:/home/fordrl/e/versotreedoc/Examples/versodoc/Vtd_src/Vtd_verso/Vtd_Verso/Vtd_Output/Vtd_Html/Vtd_AttributeName.lean.lean)
+
+{srclink "verso/Verso/Output/Html/AttributeName.lean"}[source]
+
+{editlink "Vtd_src/Vtd_verso/Vtd_Verso/Vtd_Output/Vtd_Html/Vtd_AttributeName.lean.lean"}[edit]
 
 TODO
 

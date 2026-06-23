@@ -1,19 +1,22 @@
--- /home/fordrl/e/versotreedoc/Examples/versodoc/Vtd_src/Vtd_verso-manual/Vtd_VersoManual/Vtd_Html/Vtd_JsFile.lean.lean
-
+-- Vtd_src/Vtd_verso-manual/Vtd_VersoManual/Vtd_Html/Vtd_JsFile.lean.lean
 
 
 import VersoManual
+import VersoExts
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "`s/v/V/Html/JsFile.lean`"  =>
+#doc (Manual) "`s/v/VersoManual/Html/JsFile.lean`"  =>
 
 %%%
 authors := ["Richard L Ford"]
-tag := "src-verso-manual-VersoManual-Html-JsFile.lean"
+tag := "src-verso-manual-VersoManual-Html-JsFile-lean"
 %%%
 
-[source](vscode:/home/fordrl/e/verso/src/verso-manual/VersoManual/Html/JsFile.lean) [doc-source](vscode:/home/fordrl/e/versotreedoc/Examples/versodoc/Vtd_src/Vtd_verso-manual/Vtd_VersoManual/Vtd_Html/Vtd_JsFile.lean.lean)
+
+{srclink "verso-manual/VersoManual/Html/JsFile.lean"}[source]
+
+{editlink "Vtd_src/Vtd_verso-manual/Vtd_VersoManual/Vtd_Html/Vtd_JsFile.lean.lean"}[edit]
 
 TODO
 
