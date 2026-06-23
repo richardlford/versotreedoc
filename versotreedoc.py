@@ -8,6 +8,7 @@ Richard L Ford, April 6, 2026
 
 import os
 import sys
+import subprocess
 import argparse
 from pathlib import Path
 
@@ -84,6 +85,7 @@ class VersoTreeDoc(object):
         self.is_included, self.relpath = is_included(self.output_dir, self.path)
         self.update = args.update
         self.overwrite = args.overwrite
+        self.use_git = args.use_git
         pass
 
     def write_file(self, path, contents):
@@ -99,6 +101,28 @@ class VersoTreeDoc(object):
             sys.exit(1)
         with open(path, 'w') as f:
             f.write(contents)
+        pass
+
+    def delete_file(self, path):
+        """
+        Delete the file at the specified path.
+
+        :param path: The file path to delete.
+        """
+        if not os.path.exists(path):
+            print(f"Error: file does not exist: {path}", file=sys.stderr)
+            sys.exit(1)
+        if self.use_git:
+            # Get file relative to output directory.
+            file_path = Path(path)
+            relative_path = file_path.relative_to(self.output_path)
+            print(f"Removing obsolete documentation file: {relative_path}")
+            result = subprocess.run(["git", "rm", relative_path], capture_output=True, text=True)
+            if result.returncode != 0:
+                print(f"Error: git rm failed for {path}: {result.stderr}", file=sys.stderr)
+                sys.exit(1)
+        else:
+            os.remove(path)
         pass
 
     def make_file_description(self, root, file):
@@ -126,6 +150,11 @@ class VersoTreeDoc(object):
         lean_parts = self.output_parts + prefixed_relative_parts
         lean_parts[-1] = lean_parts[-1] + ".lean"
         lean_path = Path(*lean_parts)
+        if self.update and lean_path.exists():
+            # No need to update descriptions of files as they have no import statements,
+            # and the rest of the description is just a TODO.
+            return
+
         lean_posix = lean_path.as_posix()
         lean_prefixed_relative_parts = prefixed_relative_parts.copy()
         lean_prefixed_relative_parts[-1] = lean_prefixed_relative_parts[-1] + ".lean"
@@ -165,6 +194,29 @@ TODO
         lean_path.write_text(contents)
         return
 
+    def extract_directory_verso_body(self, path):
+        """
+        Extract the body of the verso description for a directory.
+
+        :param path: Path to the description of the directory.
+        :return: The extracted body text
+        Will assert if the end-of-imports marker is not found.
+        """
+        text = Path(path).read_text()
+        lines = text.splitlines(keepends=True)
+        after_imports = False
+        body_lines = []
+        for line in lines:
+            if not after_imports:
+                if line.rstrip('\n').startswith("-- End of Imports"):
+                    after_imports = True
+                continue
+            if line.startswith("{include"):
+                break
+            body_lines.append(line)
+        assert after_imports
+        return "".join(body_lines)
+
     def make_verso(self, root, dirs, files):
         """
         Make a verso skeleton for the given directory, its subdirectories, and files.
@@ -201,30 +253,14 @@ TODO
         lean_prefixed_relative_parts = prefixed_relative_parts.copy()
         lean_prefixed_relative_parts[-1] = lean_prefixed_relative_parts[-1] + ".lean"
         lean_prefixed_posix = Path(*lean_prefixed_relative_parts).as_posix()
-        contents = f"""-- {lean_prefixed_posix}
-        """
-        # Now that we've made the directory, write file description files, and
-        # import the file descriptor files.
-        contents = contents + f"""
--- Imports for contained files or directories.
-"""
-        if len(files) > 0:
-            for file in files:
-                self.make_file_description(root, file)
-                file_parts = quoted_prefixed_relative_parts + [f"«{self.prefix}{file}»"]
-                import_text = f"""import {".".join(file_parts)}\n"""
-                contents = contents + import_text
 
-        if len(dirs) > 0:
-            for d in dirs:
-                dir_parts = quoted_prefixed_relative_parts + [f"«{self.prefix}{d}»"]
-                import_text = f"""import {".".join(dir_parts)}\n"""
-                contents = contents + import_text
-                pass
+        for file in files:
+            self.make_file_description(root, file)
 
-        contents = contents + f"""-- End of Imports.\n"""
-
-        contents = contents + f"""
+        if self.update and os.path.isfile(str(lean_path)):
+            body = self.extract_directory_verso_body(lean_path)
+        else:
+            body = f"""
 
 import VersoManual
 import VersoExts
@@ -238,14 +274,38 @@ authors := {self.authors}
 tag := "{hyphen_text}"
 %%%
 """
-        if self.vscode_links:
-            lean_relative_path = lean_path.relative_to(self.output_path)
-            contents = contents + f"""\n{{editlink "{lean_relative_path}"}}[edit]\n"""
+            if self.vscode_links:
+                lean_relative_path = lean_path.relative_to(self.output_path)
+                body = body + f"""\n{{editlink "{lean_relative_path}"}}[edit]\n"""
 
+            body = body + f"""\nTODO\n\n
+            """
+
+        contents = f"""-- {lean_prefixed_posix}
+        """
+        # Now that we've made the directory, write file description files, and
+        # import the file descriptor files.
         contents = contents + f"""
-TODO
-
+-- Imports for contained files or directories.
 """
+        if len(files) > 0:
+            for file in files:
+                file_parts = quoted_prefixed_relative_parts + [f"«{self.prefix}{file}»"]
+                import_text = f"""import {".".join(file_parts)}\n"""
+                contents = contents + import_text
+
+        if len(dirs) > 0:
+            for d in dirs:
+                dir_parts = quoted_prefixed_relative_parts + [f"«{self.prefix}{d}»"]
+                import_text = f"""import {".".join(dir_parts)}\n"""
+                contents = contents + import_text
+                pass
+
+        contents = contents + f"""-- End of Imports.\n"""
+
+        if body is not None:
+            contents = contents + body
+
         for file in files:
             file_parts = quoted_prefixed_relative_parts + [f"«{self.prefix}{file}»"]
             include_text = f"""{{include 1 {".".join(file_parts)}}}\n"""
@@ -443,7 +503,7 @@ def main := manualMain (%doc «{self.prefix}{self.lib_name}») (config := config
             for file in files:
                 if file.startswith(self.prefix) and file.endswith(".lean"):
                     file_path = Path(root) / file
-                    existing_file_set.add(file_path)
+                    existing_file_set.add(str(file_path))
         existing_file_list = list(existing_file_set)
         existing_file_list.sort()
         return existing_file_set, existing_file_list
@@ -480,7 +540,7 @@ def main := manualMain (%doc «{self.prefix}{self.lib_name}») (config := config
             lean_parts = this_parts.copy()
             lean_parts[-1] = lean_parts[-1] + ".lean"
             lean_path = Path(*lean_parts)
-            updated_file_set.add(lean_path.as_posix())
+            updated_file_set.add(str(lean_path))
 
             updated_files = []
             for f in files:
@@ -497,8 +557,7 @@ def main := manualMain (%doc «{self.prefix}{self.lib_name}») (config := config
                 lean_parts = self.output_parts + file_prefixed_relative_parts
                 lean_parts[-1] = lean_parts[-1] + ".lean"
                 lean_path = Path(*lean_parts)
-                lean_posix = lean_path.as_posix()
-                updated_file_set.add(lean_posix)
+                updated_file_set.add(str(lean_path))
         updated_file_list = list(updated_file_set)
         updated_file_list.sort()
         return updated_file_set, updated_file_list
@@ -516,7 +575,10 @@ def main := manualMain (%doc «{self.prefix}{self.lib_name}») (config := config
         # self.write_toolchain()
         existing_file_set, existing_file_list = self.get_existing_documentation_files()
         updated_file_set, updated_file_list = self.get_updated_documentation_files()
-
+        obsolute_file_set = existing_file_set.difference(updated_file_set)
+        for file in obsolute_file_set:
+            self.delete_file(file)
+        self.traverse(self.path)
         pass
 
 def parse_args():
@@ -543,6 +605,8 @@ def parse_args():
                         help='Update existing documentation rather than making new documentation.')
     parser.add_argument('--overwrite', action='store_true',
                         help='Give permission to overwrite existing files.')
+    parser.add_argument('--use-git', action='store_true',
+                        help='Use git to remove files instead of direct filesystem deletion.')
     args = parser.parse_args()
     return args
 
